@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Diligence.cpp">
+    <ClCompile Include="win32_lhmh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
