@@ -49,6 +49,26 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     windowClass.hInstance = hInstance;
     //windowClass.hIcon = ;
     windowClass.lpszClassName = "LHMHWindowClass";
+
+
+    if(RegisterClass(&windowClass)){
+        HWND windowHandle = CreateWindowEx(0, windowClass.lpszClassName, "LHMH", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, hInstance, 0);
+        if(windowHandle){
+            MSG message;
+            for(;;){
+                BOOL msgResult = GetMessage(&message, 0, 0, 0);
+                if(msgResult > 0){
+                    TranslateMessage(&message);
+                    DispatchMessage(&message);
+                }else{
+                    break;
+                }
+            }
+        }else{
+            OutputDebugStringA("WINDOW HANDLE FAILED LMAOO");
+        }
+    }
+
     return(0);
 }
 
