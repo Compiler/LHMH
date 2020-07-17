@@ -1,4 +1,9 @@
 #include <windows.h>
+#define internal static 
+#define local_persist static 
+#define global_variable static
+
+global_variable bool running = true;
 
 //handle to window, message, 
 LRESULT CALLBACK mainWindowCallback( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
@@ -13,12 +18,14 @@ LRESULT CALLBACK mainWindowCallback( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
 
         //window deletes window
         case WM_DESTROY:{
+            running = false;
             OutputDebugStringA("WM_DESTROY\n");
                 
         }break;
 
         //window instructed to close
         case WM_CLOSE:{
+            running = false;
             OutputDebugStringA("WM_CLOSE\n");
                 
         }break;
@@ -28,7 +35,18 @@ LRESULT CALLBACK mainWindowCallback( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
             OutputDebugStringA("WM_ACTIVATEAPP\n");
                 
         }break;
-        
+		
+		//paint area of window with solid color
+		case WM_PAINT: {
+			OutputDebugStringA("WM_PAINT\n");
+
+            PAINTSTRUCT paint;
+            HDC deviceContext = BeginPaint(hwnd, &paint);
+            
+            PatBlt(deviceContext, paint.rcPaint.left, paint.rcPaint.top, paint.rcPaint.right - paint.rcPaint.left, paint.rcPaint.bottom - paint.rcPaint.top, BLACKNESS);
+            EndPaint(hwnd, &paint);
+		}break;
+
         default:{
            // OutputDebugStringA("Default\n");
 
@@ -55,7 +73,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         HWND windowHandle = CreateWindowEx(0, windowClass.lpszClassName, "LHMH", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, hInstance, 0);
         if(windowHandle){
             MSG message;
-            for(;;){
+            while(running){
                 BOOL msgResult = GetMessage(&message, 0, 0, 0);
                 if(msgResult > 0){
                     TranslateMessage(&message);
